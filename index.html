@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menggunakan Address List dan Filter Aplikasi Layer di MikroTik</title>
+    <style>
+
+/* Styling untuk container gambar */
+
+.image-container {
+  margin: 30px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
+  max-width: 100%;
+  position: relative;
+}
+
+.image-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: all 0.4s ease;
+}
+
+.image-container:hover img {
+  filter: brightness(1.1);
+}
+
+.image-caption {
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7), transparent);
+  padding: 15px 20px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.image-container:hover .image-caption {
+  transform: translateY(0);
+}
+
+@keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+
+
+    /* Portfolio Button Styling */
+
+.portfolio-button {
+position: fixed;
+bottom: 30px;
+right: 30px;
+z-index: 1000;
+background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+color: var(--text-primary);
+border: none;
+border-radius: 50px;
+padding: 15px 25px;
+font-family: 'Inter', sans-serif;
+font-weight: 600;
+font-size: 1rem;
+cursor: pointer;
+box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+gap: 10px;
+overflow: hidden;
+text-decoration: none;
+}
+.portfolio-button:hover {
+transform: translateY(-5px) scale(1.05);
+box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
+}
+.portfolio-button::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg,
+transparent,
+rgba(255, 255, 255, 0.2),
+transparent);
+animation: shineEffect 3s infinite;
+}
+.portfolio-icon {
+font-size: 1.2rem;
+animation: pulse 2s infinite;
+}
+@keyframes shineEffect {
+0% { left: -100%; }
+20% { left: 100%; }
+100% { left: 100%; }
+}
+@keyframes pulse {
+0% { transform: scale(1); }
+50% { transform: scale(1.2); }
+100% { transform: scale(1); }
+}
+.attention-ripple {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 100%;
+height: 100%;
+border-radius: 50px;
+border: 2px solid var(--accent-color);
+animation: ripple 2s infinite;
+opacity: 0;
+}
+@keyframes ripple {
+0% {
+width: 100%;
+height: 100%;
+opacity: 0.8;
+}
+100% {
+width: 200%;
+height: 200%;
+opacity: 0;
+}
+}
+{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --accent-color: #06b6d4;
+    --success-color: #059669;
+    --warning-color: #d97706;
+    --danger-color: #dc2626;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #334155;
+    --bg-light: #f8fafc;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #475569;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Tech Background Pattern */
+.tech-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -3;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%);
+}
+
+.circuit-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 0.03;
+    background-image: 
+        linear-gradient(90deg, var(--primary-color) 1px, transparent 1px),
+        linear-gradient(var(--primary-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: circuitMove 20s linear infinite;
+}
+
+@keyframes circuitMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* Floating particles */
+.tech-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: float linear infinite;
+}
+
+@keyframes float {
+    0% { 
+        transform: translateY(100vh) translateX(0px);
+        opacity: 0;
+    }
+    10% { 
+        opacity: 0.6;
+    }
+    90% { 
+        opacity: 0.6;
+    }
+    100% { 
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+    }
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 100px 20px 80px;
+    background: linear-gradient(135deg, 
+        rgba(37, 99, 235, 0.1) 0%, 
+        rgba(6, 182, 212, 0.1) 50%, 
+        rgba(5, 150, 105, 0.1) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(37, 99, 235, 0.1),
+        transparent
+    );
+    animation: headerScan 10s linear infinite;
+}
+
+@keyframes headerScan {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.main-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color), var(--success-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-shadow: 0 0 50px rgba(37, 99, 235, 0.3);
+    animation: titleGlow 4s ease-in-out infinite alternate;
+    position: relative;
+}
+
+@keyframes titleGlow {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.2); }
+}
+
+.subtitle {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.author-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: cardFloat 6s ease-in-out infinite alternate;
+}
+
+@keyframes cardFloat {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-10px); }
+}
+
+.card-header {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.author-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    text-align: left;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 80px;
+    margin-right: 15px;
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-weight: 400;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* Section styling */
+.section {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    margin: 40px 0;
+    position: relative;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s ease;
+    animation: sectionSlide 0.8s ease-out;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.section:nth-child(even) {
+    animation: sectionSlideRight 0.8s ease-out;
+}
+
+@keyframes sectionSlide {
+    from { transform: translateX(-50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes sectionSlideRight {
+    from { transform: translateX(50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.section:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 12px 48px rgba(37, 99, 235, 0.2);
+    transform: translateY(-8px);
+}
+
+.section-title {
+    font-family: 'Inter', sans-serif;
+    color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 30px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+}
+
+/* Sub-section titles */
+.subsection-title {
+    font-family: 'Inter', sans-serif;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.subsection-title::before {
+    content: '—'; /* Simple dash or similar indicator */
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+}
+
+/* Code blocks with typing effect */
+.code-terminal {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px 0;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.code-terminal::before {
+    content: '$ mikrotik@router:~';
+    color: var(--success-color);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.code-line {
+    color: var(--text-primary);
+    margin: 8px 0;
+    position: relative;
+    padding-left: 20px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    width: fit-content;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: pre;
+}
+
+.code-line.typing {
+    opacity: 1;
+    border-right: 2px solid var(--accent-color);
+    animation: blink-cursor 1s infinite;
+}
+
+.code-line.typed {
+    opacity: 1;
+    border-right: none;
+}
+
+@keyframes blink-cursor {
+    0%, 50% { border-color: var(--accent-color); }
+    51%, 100% { border-color: transparent; }
+}
+
+.code-line:hover {
+    background: rgba(37, 99, 235, 0.1);
+    padding-left: 25px;
+    border-radius: 6px;
+}
+
+.code-line::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-size: 0.8rem;
+}
+
+.comment {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.string {
+    color: var(--warning-color);
+    font-weight: 400;
+}
+
+.keyword {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Alert boxes */
+.tech-alert {
+    background: linear-gradient(135deg, 
+        rgba(37, 99, 235, 0.1), 
+        rgba(6, 182, 212, 0.1));
+    border: 1px solid var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px 0;
+    position: relative;
+    animation: alertPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes alertPulse {
+    0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+    100% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.4); }
+}
+
+.tech-alert::before {
+    content: '🔧 TEKNOLOGI INFO';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--bg-primary);
+    color: var(--primary-color);
+    padding: 5px 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 20px;
+    border: 1px solid var(--primary-color);
+}
+
+.security-alert {
+    background: linear-gradient(135deg, 
+        rgba(220, 38, 38, 0.1), 
+        rgba(217, 119, 6, 0.1));
+    border: 1px solid var(--danger-color);
+    border-left: 4px solid var(--danger-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px 0;
+    position: relative;
+    animation: securityBlink 2s ease-in-out infinite alternate;
+}
+
+@keyframes securityBlink {
+    0% { border-left-color: var(--danger-color); }
+    100% { border-left-color: var(--warning-color); }
+}
+
+.security-alert::before {
+    content: '🛡 KEAMANAN';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--bg-primary);
+    color: var(--danger-color);
+    padding: 5px 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 20px;
+    border: 1px solid var(--danger-color);
+}
+
+.conclusion-box {
+    background: linear-gradient(135deg, 
+        rgba(5, 150, 105, 0.1), 
+        rgba(37, 99, 235, 0.1));
+    border: 1px solid var(--success-color);
+    border-left: 4px solid var(--success-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px 0;
+    position: relative;
+    animation: conclusionGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes conclusionGlow {
+    0% { box-shadow: 0 0 20px rgba(5, 150, 105, 0.2); }
+    100% { box-shadow: 0 0 30px rgba(5, 150, 105, 0.4); }
+}
+
+.conclusion-box::before {
+    content: '📝 KESIMPULAN';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--bg-primary);
+    color: var(--success-color);
+    padding: 5px 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 20px;
+    border: 1px solid var(--success-color);
+}
+
+/* Bibliography */
+.bibliography {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.08), 
+        rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 40px;
+    margin-top: 60px;
+    backdrop-filter: blur(20px);
+    animation: biblioFade 1.5s ease-out;
+}
+
+@keyframes biblioFade {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bibliography h3 {
+    color: var(--accent-color);
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.bibliography ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.bibliography li {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    position: relative;
+    padding-left: 50px;
+}
+
+.bibliography li::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    font-size: 1.2rem;
+}
+
+.bibliography li:hover {
+    color: var(--text-primary);
+    transform: translateX(10px);
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.05));
+}
+
+.bibliography a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    word-break: break-all;
+}
+
+.bibliography a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+/* Progress bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+    z-index: 1000;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .section {
+        padding: 25px 20px;
+        margin: 30px 0;
+    }
+    
+    .container {
+        padding: 40px 15px;
+    }
+
+    .code-terminal {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+
+    .author-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Smooth animations */
+.fade-in {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    /* Anti-Copy CSS */
+
+
+* {
+-webkit-user-select: none;
+-webkit-touch-callout: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+
+img, a {
+-webkit-user-drag: none;
+-khtml-user-drag: none;
+-moz-user-drag: none;
+-o-user-drag: none;
+user-drag: none;
+}
+
+</style>
+
+
+
+
+
+<!-- Tech Background -->
+<div class="tech-bg"></div>
+<div class="circuit-pattern"></div>
+<div class="tech-particles" id="techParticles"></div>
+
+<!-- Header -->
+<div class="header">
+    <h1 class="main-title">MIKROTIK ROUTEROS</h1>
+    <div class="subtitle">Mengenal Fitur Wireless yang Tersedia di MikroTik</div>
+    <div class="subtitle">Konfigurasi dan pengoptimalan jaringan nirkabel dengan RouterOS</div>
+    
+    <div class="author-card">
+        <div class="card-header">Informasi Penulis</div>
+        <div class="author-info">
+            <div class="info-item">
+                <span class="info-label">Penulis:</span>
+                <span class="info-value">Jovian Ekasakta</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Guru:</span>
+                <span class="info-value">Arief Wahyudin</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Kelas:</span>
+                <span class="info-value">XI TJKT 03</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sekolah:</span>
+                <span class="info-value">Dwija Bhakti 01 Jombang</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+       <div class="section fade-in">
+            <h2 class="section-title"># topologi yang digunakan</h2>
+
+                                                <div class="image-container">
+          <img src="topologi.png" alt="SERVICE IP pada MikroTik RouterOS">
+          <div class="image-caption">Tampilan topologi di gns3</div>
+        </div>
+
+        </div>
+
+
+<div class="container">
+    <!-- Section: Protokol dan Mode Wireless -->
+    <div class="section fade-in">
+        <h2 class="section-title">1. PROTOKOL DAN MODE WIRELESS</h2>
+
+                                                        <div class="image-container">
+          <img src="no (1).png" alt="SERVICE IP pada MikroTik RouterOS">
+          <div class="image-caption">Tampilan topologi di gns3</div>
+        </div>
+        
+        <h3 class="subsection-title">Protokol Wireless di MikroTik</h3>
+        <p>Dari sumber MikroTik Documentation (2024), RouterOS wireless complies dengan standar IEEE 802.11, menyediakan dukungan lengkap untuk 802.11a, 802.11b, 802.11g, 802.11n, dan 802.11ac serta dilengkapi dengan fitur tambahan seperti WPA, WEP, AES encryption, Wireless Distribution System (WDS), Dynamic Frequency Selection (DFS), Virtual Access Point, dan protokol proprietary Nstreme dan NV2.</p>
+        
+        <p>Dari sumber MikroTik Wiki (2023), MikroTik telah mengembangkan protokol wireless berbasis teknologi TDMA (Time Division Multiple Access) yang disebut NV2 (Nstreme version 2). TDMA adalah metode akses kanal untuk jaringan berbagi medium yang memungkinkan beberapa pengguna untuk berbagi frekuensi yang sama dengan membagi sinyal ke dalam slot waktu yang berbeda.</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless print</span></div>
+            <div class="code-line comment"># Menampilkan semua interface wireless yang tersedia pada perangkat</div>
+            <div class="code-line">Flags: X - disabled, R - running </div>
+            <div class="code-line"> #    NAME                MTU MAC-ADDRESS       ARP             WIRELESS-PROTOCOL</div>
+            <div class="code-line"> 0 R  wlan1              1500 E4:8D:8C:XX:XX:XX enabled         802.11</div>
+            <div class="code-line"> 1 X  wlan2              1500 E4:8D:8C:XX:XX:XX enabled         nv2</div>
+        </div>
+
+        <p>Untuk mengatur protokol wireless pada interface:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless set</span> wlan1 <span class="keyword">wireless-protocol=</span><span class="string">nv2</span></div>
+            <div class="code-line comment"># Mengubah protokol wireless menjadi NV2 pada interface wlan1</div>
+        </div>
+
+        <div class="tech-alert">
+            <p>Dari sumber MikroTik Interface Documentation (2024), protokol NV2 memiliki batas maksimal 511 klien dan sangat cocok untuk jaringan Point-to-Multipoint (PtMP). Penggunaan protokol NV2 memberikan performa yang lebih baik daripada protokol 802.11 standar pada lingkungan dengan banyak klien.</p>
+        </div>
+
+        <h3 class="subsection-title">Mode Operasi Wireless</h3>
+        <p>Dari sumber MikroTik Wireless Station Modes (2024), wireless di RouterOS dapat beroperasi dalam beberapa mode, termasuk client (station), access point, wireless bridge, dan sebagainya. Mode station juga memiliki beberapa variasi yang berbeda untuk kebutuhan specific.</p>
+
+        <p>Dari sumber NetworkLessons (2023), pemilihan mode station yang tepat sangat penting untuk fungsi bridging dan forwarding paket data. Mode station-bridge dan station-wds adalah pilihan yang lebih baik untuk layer 2 bridging daripada mode station-pseudobridge.</p>
+
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless set</span> wlan1 <span class="keyword">mode=</span><span class="string">ap-bridge</span></div>
+            <div class="code-line comment"># Mengatur wlan1 sebagai Access Point dengan mode bridge</div>
+            <div class="code-line"><span class="keyword">/interface wireless set</span> wlan2 <span class="keyword">mode=</span><span class="string">station-bridge</span></div>
+            <div class="code-line comment"># Mengatur wlan2 sebagai Station dengan dukungan L2 bridging</div>
+        </div>
+
+        <p>Untuk melihat status koneksi wireless:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless monitor</span> wlan2</div>
+            <div class="code-line comment"># Memonitor status koneksi pada interface wlan2</div>
+            <div class="code-line">                  status: connected-to-ess</div>
+            <div class="code-line">                    ssid: MikroTik-AP</div>
+            <div class="code-line">                    band: 5ghz-a/n/ac</div>
+            <div class="code-line">             frequency: 5180</div>
+            <div class="code-line">                    channel-width: 20/40/80mhz-Ceee</div>
+            <div class="code-line">                 signal-strength: -65dBm@MCS7</div>
+            <div class="code-line">                tx-ccq: 100%</div>
+            <div class="code-line">               rx-ccq: 98%</div>
+        </div>
+
+        <div class="conclusion-box">
+            <strong>Kesimpulan:</strong> Dari 2 pendapat tersebut dapat disimpulkan bahwa MikroTik RouterOS menyediakan berbagai protokol wireless mulai dari standar IEEE 802.11 hingga protokol proprietary seperti NV2 yang berbasis TDMA. Pemilihan protokol dan mode operasi yang tepat sangat penting untuk memaksimalkan performa jaringan wireless sesuai dengan kebutuhan spesifik, baik untuk akses point, station, maupun wireless bridge.
+        </div>
+    </div>
+
+    <!-- Section: Fitur Security Wireless -->
+    <div class="section fade-in">
+        <h2 class="section-title">2. FITUR SECURITY WIRELESS</h2>
+
+        <h3 class="subsection-title">Security Profiles dan Enkripsi</h3>
+        <p>Dari sumber MikroTik Documentation (2024), keamanan jaringan wireless adalah aspek penting yang harus diperhatikan. RouterOS menyediakan fitur security profile yang memungkinkan administrator untuk mengonfigurasi metode autentikasi dan enkripsi yang digunakan pada jaringan wireless, termasuk WPA2-PSK, WPA3-PSK, dan OWE (Opportunistic Wireless Encryption).</p>
+
+        <p>Dari sumber IT Orakul (2025), MikroTik mengimplementasikan perlindungan frame manajemen berbasis algoritma proprietary yang menggunakan shared secret. Perlindungan ini memungkinkan perangkat RouterOS untuk memverifikasi sumber frame manajemen dan mengonfirmasi bahwa frame tersebut bukan berbahaya, yang membantu menangkal serangan deautentikasi dan disasosiasi.</p>
+
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless security-profiles</span></div>
+            <div class="code-line comment"># Masuk ke menu security-profiles</div>
+            <div class="code-line"><span class="keyword">add</span> name=<span class="string">"secure-profile"</span> authentication-types=<span class="string">wpa2-psk,wpa3-psk</span> mode=<span class="string">dynamic-keys</span> \</div>
+            <div class="code-line">    wpa2-pre-shared-key=<span class="string">"StrongPassword123!"</span> wpa3-pre-shared-key=<span class="string">"StrongPassword123!"</span> \</div>
+            <div class="code-line">    management-protection=<span class="string">required</span> management-protection-key=<span class="string">"ProtectionKey"</span></div>
+        </div>
+
+        <p>Untuk menerapkan security profile ke interface wireless:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless set</span> wlan1 <span class="keyword">security-profile=</span><span class="string">secure-profile</span></div>
+            <div class="code-line comment"># Menerapkan security profile yang telah dibuat ke interface wlan1</div>
+        </div>
+
+        <div class="security-alert">
+            <p>Dari sumber IT Orakul (2025), penggunaan WPA3 sangat direkomendasikan untuk meningkatkan keamanan jaringan wireless. Pastikan untuk selalu menggunakan password yang kuat (minimal 12 karakter, kombinasi huruf, angka, dan simbol) dan mengaktifkan fitur management-protection untuk melindungi dari serangan deautentikasi.</p>
+        </div>
+
+        <h3 class="subsection-title">Access List dan Kontrol Akses</h3>
+        <p>Dari sumber MikroTik RouterOS (2024), access list menyediakan berbagai cara untuk memfilter dan mengelola koneksi wireless. RouterOS akan memeriksa setiap koneksi baru untuk melihat apakah parameternya cocok dengan parameter yang ditentukan dalam aturan access list. Aturan diperiksa sesuai urutan yang muncul dalam daftar.</p>
+
+        <p>Dari sumber NetworkWorld (2023), access list sangat berguna untuk membatasi akses berdasarkan MAC address, waktu, dan kekuatan sinyal. Hal ini memungkinkan administrator untuk menerapkan kebijakan keamanan yang lebih granular pada jaringan wireless.</p>
+
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless access-list</span></div>
+            <div class="code-line comment"># Masuk ke menu access-list</div>
+            <div class="code-line"><span class="keyword">add</span> mac-address=<span class="string">AA:BB:CC:DD:EE:FF</span> interface=<span class="string">wlan1</span> authentication=<span class="string">yes</span> forwarding=<span class="string">yes</span> comment=<span class="string">"Staff Device"</span></div>
+            <div class="code-line comment"># Mengizinkan device dengan MAC tertentu</div>
+            <div class="code-line"><span class="keyword">add</span> mac-address=<span class="string">FF:EE:DD:CC:BB:AA</span> interface=<span class="string">wlan1</span> authentication=<span class="string">no</span> comment=<span class="string">"Blocked Device"</span></div>
+            <div class="code-line comment"># Memblokir device dengan MAC tertentu</div>
+            <div class="code-line"><span class="keyword">add</span> interface=<span class="string">wlan1</span> signal-range=<span class="string">-90..-60</span> time=<span class="string">8h-17h,mon,tue,wed,thu,fri</span> authentication=<span class="string">yes</span> comment=<span class="string">"Working Hours"</span></div>
+            <div class="code-line comment"># Mengizinkan koneksi berdasarkan kekuatan sinyal dan jam kerja</div>
+        </div>
+
+        <p>Untuk mengaktifkan default authenticate dan forward:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless set</span> wlan1 <span class="keyword">default-authentication=</span><span class="string">yes</span> <span class="keyword">default-forwarding=</span><span class="string">yes</span></div>
+            <div class="code-line comment"># Mengizinkan autentikasi dan forwarding default untuk semua klien yang tidak tercantum dalam access-list</div>
+        </div>
+
+        <div class="conclusion-box">
+            <strong>Kesimpulan:</strong> Dari 2 pendapat tersebut dapat disimpulkan bahwa MikroTik RouterOS menawarkan fitur keamanan wireless yang komprehensif melalui security profiles dan access list. Security profiles memungkinkan penerapan enkripsi dan autentikasi yang kuat seperti WPA2/WPA3, sementara access list menyediakan kontrol akses yang granular berdasarkan MAC address, waktu, dan kekuatan sinyal. Kombinasi kedua fitur ini membuat jaringan wireless MikroTik menjadi sangat aman dan fleksibel.
+        </div>
+    </div>
+
+    <!-- Section: CAPsMAN (Controlled Access Point Manager) -->
+    <div class="section fade-in">
+        <h2 class="section-title">3. CAPsMAN (CONTROLLED ACCESS POINT MANAGER)</h2>
+
+                                                        <div class="image-container">
+          <img src="no (3).png" alt="SERVICE IP pada MikroTik RouterOS">
+          <div class="image-caption">Tampilan topologi di gns3</div>
+        </div>
+
+        <h3 class="subsection-title">Pengertian dan Manfaat CAPsMAN</h3>
+        <p>Dari sumber MikroTik Documentation (2024), Controlled Access Point system Manager (CAPsMAN) memungkinkan penerapan pengaturan wireless ke beberapa perangkat MikroTik AP dari satu antarmuka konfigurasi pusat. Lebih spesifik, CAPsMAN memungkinkan sentralisasi manajemen jaringan wireless dan, jika diperlukan, pemrosesan data.</p>
+
+        <p>Dari sumber Mikrotik Users (2023), CAPsMAN adalah fitur dalam MikroTik RouterOS yang memungkinkan Anda untuk memusatkan manajemen dan konfigurasi beberapa access point wireless MikroTik dari satu titik, yang dikenal sebagai pengontrol CAPsMAN. Dengan CAPsMAN, Anda dapat mengonfigurasi dan mengelola jaringan wireless secara lebih efisien, terutama dalam skenario di mana Anda memiliki beberapa access point yang tersebar di suatu area.</p>
+
+        <div class="tech-alert">
+            <p>Dari sumber MikroTik Forum (2023), perlu diperhatikan bahwa perangkat dengan WiFiWave2 (RouterOS v7+) memerlukan CAPsMAN versi 2 yang tidak kompatibel dengan CAPsMAN versi 1. Ini berarti Anda mungkin memerlukan dua pengontrol CAPsMAN terpisah dalam lingkungan campuran dengan perangkat RouterOS versi lama dan baru.</p>
+        </div>
+
+        <h3 class="subsection-title">Konfigurasi CAPsMAN Server</h3>
+        <p>Dari sumber MikroTik Documentation (2024), untuk mengonfigurasi CAPsMAN server, pertama-tama Anda perlu membuat template konfigurasi yang nantinya akan diterapkan ke perangkat CAP (Controlled Access Point). Template ini mencakup pengaturan seperti SSID, keamanan, negara, dan parameter lainnya.</p>
+
+        <p>Dari sumber MikroTik Wiki (2022), implementasi CAPsMAN dapat dilakukan baik dengan perangkat yang memiliki interface wireless maupun yang tidak. Yang terpenting adalah RouterOS memiliki paket "wireless" yang terinstal.</p>
+
+        <div class="code-terminal">
+            <div class="code-line comment"># Mengaktifkan CAPsMAN server</div>
+            <div class="code-line"><span class="keyword">/caps-man manager</span></div>
+            <div class="code-line"><span class="keyword">set</span> enabled=<span class="string">yes</span></div>
+            
+            <div class="code-line comment"># Membuat security profile untuk CAPsMAN</div>
+            <div class="code-line"><span class="keyword">/caps-man security</span></div>
+            <div class="code-line"><span class="keyword">add</span> name=<span class="string">"main-security"</span> authentication-types=<span class="string">wpa2-psk</span> encryption=<span class="string">aes-ccm</span> \</div>
+            <div class="code-line">    passphrase=<span class="string">"StrongPassword123!"</span></div>
+            
+            <div class="code-line comment"># Membuat konfigurasi channel</div>
+            <div class="code-line"><span class="keyword">/caps-man channel</span></div>
+            <div class="code-line"><span class="keyword">add</span> name=<span class="string">"channel-2ghz"</span> band=<span class="string">2ghz-b/g/n</span> width=<span class="string">20/40mhz-Ce</span> frequency=<span class="string">2442</span></div>
+            
+            <div class="code-line comment"># Membuat configuration profile</div>
+            <div class="code-line"><span class="keyword">/caps-man configuration</span></div>
+            <div class="code-line"><span class="keyword">add</span> name=<span class="string">"main-config"</span> mode=<span class="string">ap</span> channel=<span class="string">"channel-2ghz"</span> security=<span class="string">"main-security"</span> \</div>
+            <div class="code-line">    ssid=<span class="string">"MikroTik-Network"</span> country=<span class="string">"Indonesia"</span></div>
+            
+            <div class="code-line comment"># Membuat aturan provisioning</div>
+            <div class="code-line"><span class="keyword">/caps-man provisioning</span></div>
+            <div class="code-line"><span class="keyword">add</span> action=<span class="string">create-dynamic-enabled</span> master-configuration=<span class="string">"main-config"</span></div>
+        </div>
+
+        <h3 class="subsection-title">Konfigurasi CAP (Controlled Access Point)</h3>
+        <p>Dari sumber MikroTik Documentation (2024), CAP (Controlled Access Point) hanya memerlukan konfigurasi minimal untuk terhubung ke CAPsMAN. Setelah terhubung, semua pengaturan akan ditangani oleh CAPsMAN server.</p>
+
+        <p>Dari sumber MikroTik Wiki (2022), ada beberapa cara untuk mengaktifkan CAP mode pada perangkat MikroTik, termasuk melalui tombol reset saat boot atau melalui konfigurasi manual.</p>
+
+        <div class="code-terminal">
+            <div class="code-line comment"># Konfigurasi dasar pada CAP device</div>
+            <div class="code-line comment"># Membuat bridge untuk interface Ethernet</div>
+            <div class="code-line"><span class="keyword">/interface bridge</span></div>
+            <div class="code-line"><span class="keyword">add</span> name=<span class="string">"bridge1"</span></div>
+            <div class="code-line"><span class="keyword">/interface bridge port</span></div>
+            <div class="code-line"><span class="keyword">add</span> bridge=<span class="string">"bridge1"</span> interface=<span class="string">ether1</span></div>
+            
+            <div class="code-line comment"># Mengaktifkan CAP mode</div>
+            <div class="code-line"><span class="keyword">/caps-man cap</span></div>
+            <div class="code-line"><span class="keyword">set</span> enabled=<span class="string">yes</span> interfaces=<span class="string">wlan1</span> discovery-interfaces=<span class="string">bridge1</span></div>
+        </div>
+
+        <p>Untuk melihat status CAP yang terhubung ke CAPsMAN:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/caps-man remote-cap</span> <span class="keyword">print</span></div>
+            <div class="code-line comment"># Menampilkan daftar CAP yang terhubung ke CAPsMAN</div>
+            <div class="code-line">Flags: R - running, D - dynamic </div>
+            <div class="code-line"> #    IDENTITY    RADIO-MAC       STATE    REMOTE-CAP-ADDRESS</div>
+            <div class="code-line"> 0 RD office-cap1 E4:8D:8C:XX:XX:XX run-cmi  192.168.88.2</div>
+            <div class="code-line"> 1 RD office-cap2 E4:8D:8C:YY:YY:YY run-cmi  192.168.88.3</div>
+        </div>
+
+        <p>Untuk melihat klien yang terhubung ke jaringan CAPsMAN:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/caps-man registration-table</span> <span class="keyword">print</span></div>
+            <div class="code-line comment"># Menampilkan daftar klien yang terdaftar</div>
+            <div class="code-line"> #   INTERFACE    MAC-ADDRESS       SSID            UPTIME</div>
+            <div class="code-line"> 0   office-cap1  AA:BB:CC:XX:XX:XX MikroTik-Network 3h24m12s</div>
+            <div class="code-line"> 1   office-cap2  FF:EE:DD:YY:YY:YY MikroTik-Network 42m35s</div>
+        </div>
+
+        <div class="conclusion-box">
+            <strong>Kesimpulan:</strong> Dari 2 pendapat tersebut dapat disimpulkan bahwa CAPsMAN adalah fitur yang sangat berguna untuk mengelola jaringan wireless MikroTik yang terdiri dari banyak access point. Dengan CAPsMAN, administrator dapat mengonfigurasi dan mengelola semua AP dari satu lokasi pusat, menyederhanakan tugas administrasi dan memastikan konsistensi dalam pengaturan jaringan. Perlu diperhatikan perbedaan antara CAPsMAN v1 dan v2 untuk kompatibilitas dengan perangkat RouterOS versi lama dan baru.
+        </div>
+    </div>
+
+    <!-- Section: Fitur Wireless Lanjutan -->
+    <div class="section fade-in">
+        <h2 class="section-title">4. FITUR WIRELESS LANJUTAN</h2>
+
+        <h3 class="subsection-title">Virtual AP dan VLAN Tagging</h3>
+        <p>Dari sumber MikroTik Wireless Interface (2024), Virtual AP adalah fitur yang memungkinkan satu interface wireless fisik untuk membuat beberapa jaringan wireless virtual dengan SSID berbeda. Fitur ini berguna untuk memisahkan akses bagi berbagai jenis pengguna dan hanya berfungsi dengan protokol 802.11 (tidak didukung oleh Nv2).</p>
+
+        <p>Dari sumber MikroTik Wiki (2023), dengan VLAN tagging dimungkinkan untuk memisahkan lalu lintas Virtual AP di sisi Ethernet dari AP yang melakukan "locally forwarding" (AP yang antarmuka wireless-nya di-bridge dengan Ethernet). Hal ini diperlukan untuk memisahkan lalu lintas jaringan "manajemen" dan "tamu" di sisi Ethernet AP.</p>
+
+        <div class="code-terminal">
+            <div class="code-line comment"># Membuat Virtual AP</div>
+            <div class="code-line"><span class="keyword">/interface wireless</span></div>
+            <div class="code-line"><span class="keyword">add</span> mode=<span class="string">ap-bridge</span> master-interface=<span class="string">wlan1</span> ssid=<span class="string">"Guest-Network"</span> \</div>
+            <div class="code-line">    security-profile=<span class="string">guest-profile</span> disabled=<span class="string">no</span> vlan-id=<span class="string">10</span></div>
+            <div class="code-line comment"># Virtual AP dengan SSID 'Guest-Network' dan VLAN ID 10</div>
+        </div>
+
+        <p>Untuk mengatur VLAN tagging pada bridge:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface bridge vlan</span></div>
+            <div class="code-line"><span class="keyword">add</span> bridge=<span class="string">bridge1</span> vlan-ids=<span class="string">10</span> tagged=<span class="string">ether1</span></div>
+            <div class="code-line comment"># Menambahkan VLAN ID 10 ke bridge1 dan menandai interface ether1</div>
+        </div>
+
+        <div class="tech-alert">
+            <p>Dari sumber MikroTik Interface Documentation (2024), Virtual AP hanya akan berfungsi jika master interface dalam mode ap-bridge, bridge, station, atau wds-slave. Maksimum 127 virtual interface dapat dibuat per interface fisik, tetapi tidak disarankan membuat lebih dari 30 karena akan mulai menurunkan performa.</p>
+        </div>
+
+        <h3 class="subsection-title">WDS (Wireless Distribution System) dan Station Modes</h3>
+        <p>Dari sumber MikroTik Wireless Station Modes (2024), 802.11 menyertakan format frame tambahan, yang disebut format frame 4 alamat, yang ditujukan untuk "wireless distribution system" (WDS) - sistem untuk menghubungkan AP secara wireless. Format ini menambahkan alamat tambahan, menghasilkan header yang berisi semua informasi yang diperlukan untuk L2 bridging transparan melalui link wireless.</p>
+
+        <p>Dari sumber MikroTik Wiki (2023), mode station-wds didukung untuk semua protokol wireless kecuali ketika protokol 802.11 digunakan dalam koneksi ke perangkat non-RouterOS. Mode ini aman digunakan untuk L2 bridging dan memberikan kontrol administratif paling banyak di AP melalui interface WDS terpisah.</p>
+
+        <div class="code-terminal">
+            <div class="code-line comment"># Konfigurasi WDS pada Access Point</div>
+            <div class="code-line"><span class="keyword">/interface wireless</span></div>
+            <div class="code-line"><span class="keyword">set</span> wlan1 <span class="keyword">mode=</span><span class="string">ap-bridge</span> <span class="keyword">ssid=</span><span class="string">"MikroTik-WDS"</span> <span class="keyword">wds-mode=</span><span class="string">dynamic</span> <span class="keyword">bridge-mode=</span><span class="string">enabled</span></div>
+            <div class="code-line comment"># Mengaktifkan WDS dinamis pada AP</div>
+            
+            <div class="code-line comment"># Konfigurasi WDS pada Station</div>
+            <div class="code-line"><span class="keyword">/interface wireless</span></div>
+            <div class="code-line"><span class="keyword">set</span> wlan1 <span class="keyword">mode=</span><span class="string">station-wds</span> <span class="keyword">ssid=</span><span class="string">"MikroTik-WDS"</span></div>
+            <div class="code-line comment"># Mengonfigurasi station dalam mode WDS</div>
+        </div>
+
+        <p>Untuk melihat interface WDS yang terbentuk:</p>
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/interface wireless wds</span> <span class="keyword">print</span></div>
+            <div class="code-line comment"># Menampilkan semua interface WDS yang ada</div>
+            <div class="code-line">Flags: X - disabled, R - running, D - dynamic </div>
+            <div class="code-line"> #    NAME          MTU  MAC-ADDRESS       MASTER-INTERFACE</div>
+            <div class="code-line"> 0 RD wds1          1500 E4:8D:8C:XX:XX:XX wlan1</div>
+        </div>
+
+        <h3 class="subsection-title">Wireless Scanning dan Frequency Usage</h3>
+        <p>Dari sumber MikroTik Documentation (2024), menggunakan perintah scan, operasi interface akan dinonaktifkan (link wireless terputus selama operasi scan). Sejak RouterOS v6.35, background scan didukung yang dapat digunakan selama operasi interface wireless tanpa memutus link wireless.</p>
+
+        <p>Dari sumber RouterOS WiFi Documentation (2024), informasi tentang kondisi RF pada kanal yang tersedia dapat diperoleh dengan menjalankan perintah frequency-scan. Alat '/interface wifi flat-snoop' berguna untuk memantau AP dan station, yang memonitor penggunaan frekuensi, dan menampilkan perangkat mana yang menempati setiap frekuensi.</p>
+
+        <div class="code-terminal">
+            <div class="code-line comment"># Melakukan scan wireless</div>
+            <div class="code-line"><span class="keyword">/interface wireless scan</span> wlan1 <span class="keyword">duration=</span><span class="string">10s</span></div>
+            <div class="code-line comment"># Scan selama 10 detik pada interface wlan1</div>
+            
+            <div class="code-line comment"># Melakukan background scan</div>
+            <div class="code-line"><span class="keyword">/interface wireless scan</span> wlan1 <span class="keyword">background=</span><span class="string">yes</span> <span class="keyword">save-file=</span><span class="string">"scan-results"</span></div>
+            <div class="code-line comment"># Background scan dengan menyimpan hasil ke file</div>
+            
+            <div class="code-line comment"># Melihat hasil scan yang tersimpan</div>
+            <div class="code-line"><span class="keyword">/file print</span> <span class="keyword">where</span> name=<span class="string">"scan-results"</span></div>
+        </div>
+
+        <div class="conclusion-box">
+            <strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa MikroTik RouterOS menawarkan beragam fitur wireless lanjutan seperti Virtual AP, VLAN tagging, WDS, dan wireless scanning. Fitur-fitur ini memberikan fleksibilitas dan kontrol yang luas dalam mengelola jaringan wireless. Virtual AP memungkinkan pemisahan jaringan dengan SSID berbeda, WDS memungkinkan bridging L2 yang transparan melalui link wireless, dan wireless scanning membantu dalam menganalisis lingkungan RF untuk optimasi jaringan.
+        </div>
+    </div>
+
+    <!-- Bibliography -->
+    <div class="bibliography">
+        <h3>DAFTAR PUSTAKA</h3>
+        <ul>
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Wireless - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/1409138/Wireless" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/1409138/Wireless</a>. Diakses pada 12 September 2025, pukul 07:15 WIB.</li>
+            
+            <li><strong>MikroTik Wiki.</strong> 2023. <em>Manual:Interface/Wireless</em>. <a href="https://wiki.mikrotik.com/Manual:Interface/Wireless" target="_blank">https://wiki.mikrotik.com/Manual:Interface/Wireless</a>. Diakses pada 12 September 2025, pukul 07:45 WIB.</li>
+            
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Wireless Interface - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/8978446/Wireless+Interface" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/8978446/Wireless+Interface</a>. Diakses pada 12 September 2025, pukul 08:30 WIB.</li>
+            
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Wireless Station Modes - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/122388518/Wireless+Station+Modes" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/122388518/Wireless+Station+Modes</a>. Diakses pada 12 September 2025, pukul 09:10 WIB.</li>
+
+            <li><strong>NetworkWorld.</strong> 2023. <em>Understanding Wireless Security in Network Infrastructure</em>. <a href="https://www.networkworld.com/article/3672543/understanding-wireless-security.html" target="_blank">https://www.networkworld.com/article/3672543/understanding-wireless-security.html</a>. Diakses pada 12 September 2025, pukul 09:45 WIB.</li>
+
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>AP Controller (CAPsMAN) - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/1409149/AP+Controller+CAPsMAN" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/1409149/AP+Controller+CAPsMAN</a>. Diakses pada 12 September 2025, pukul 10:20 WIB.</li>
+
+            <li><strong>NetworkLessons.</strong> 2023. <em>MikroTik Wireless Mode Configuration</em>. <a href="https://networklessons.com/mikrotik/mikrotik-wireless-mode-configuration" target="_blank">https://networklessons.com/mikrotik/mikrotik-wireless-mode-configuration</a>. Diakses pada 12 September 2025, pukul 11:05 WIB.</li>
+
+            <li><strong>MikroTik Wiki.</strong> 2022. <em>Manual:Simple CAPsMAN setup</em>. <a href="https://wiki.mikrotik.com/Manual:Simple_CAPsMAN_setup" target="_blank">https://wiki.mikrotik.com/Manual:Simple_CAPsMAN_setup</a>. Diakses pada 12 September 2025, pukul 11:40 WIB.</li>
+
+            <li><strong>RouterOS WiFi Documentation.</strong> 2024. <em>WiFi - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/224559120/WiFi" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/224559120/WiFi</a>. Diakses pada 12 September 2025, pukul 12:15 WIB.</li>
+
+            <li><strong>IT Orakul.</strong> 2025. <em>MikroTik Wi-Fi Setup Guide: Complete Tutorial for RouterOS v6 and v7</em>. <a href="https://itorakul.com.ua/en/mikrotik-wi-fi-setup-guide-complete/" target="_blank">https://itorakul.com.ua/en/mikrotik-wi-fi-setup-guide-complete/</a>. Diakses pada 12 September 2025, pukul 13:30 WIB.</li>
+            
+            <li><strong>MikroTik Forum.</strong> 2023. <em>HAP AX3 WifiWave2 CAPSMAN</em>. <a href="https://forum.mikrotik.com/viewtopic.php?t=192458" target="_blank">https://forum.mikrotik.com/viewtopic.php?t=192458</a>. Diakses pada 12 September 2025, pukul 14:10 WIB.</li>
+            
+            <li><strong>Mikrotik Users.</strong> 2023. <em>Controlling Access Points with CAPsMAN</em>. <a href="https://mikrotikusers.com/controlling-access-points-with-capsman/" target="_blank">https://mikrotikusers.com/controlling-access-points-with-capsman/</a>. Diakses pada 12 September 2025, pukul 14:45 WIB.</li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script>
+    // Tech particles animation
+    function createTechParticles() {
+        const particlesContainer = document.getElementById('techParticles');
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Scroll progress
+    function updateScrollProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercent = (scrollTop / scrollHeight) * 100;
+        document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+    }
+
+    // Typing effect for code lines
+    function typeText(element, text, speed = 30) {
+        return new Promise(resolve => {
+            element.classList.add('typing');
+            let i = 0;
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent = text.slice(0, i + 1);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.classList.remove('typing');
+                    element.classList.add('typed');
+                    resolve();
+                }
+            }
+            type();
+        });
+    }
+    
+    async function animateCodeBlock(terminal) {
+        const codeLines = terminal.querySelectorAll('.code-line:not(.typed)');
+        for (const line of codeLines) {
+            const originalHTML = line.innerHTML;
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = originalHTML;
+            const textContent = tempDiv.textContent || tempDiv.innerText || '';
+            
+            // Clear the line content, but keep child spans for styling
+            const children = Array.from(line.childNodes).map(child => child.cloneNode(true));
+            line.innerHTML = '';
+            
+            await typeText(line, textContent, 20);
+            
+            // Restore original HTML with spans
+            line.innerHTML = originalHTML;
+            line.classList.add('typed');
+        }
+    }
+
+    // Animate code blocks with typing effect
+    function setupCodeBlockObserver() {
+        const codeTerminals = document.querySelectorAll('.code-terminal');
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const terminal = entry.target;
+                    // For already typed lines, just show them
+                    terminal.querySelectorAll('.code-line.typed').forEach(line => line.style.opacity = '1');
+                    
+                    animateCodeBlock(terminal);
+                    obs.unobserve(terminal); // Animate only once
+                }
+            });
+        }, { threshold: 0.3 });
+
+        codeTerminals.forEach(terminal => {
+            observer.observe(terminal);
+        });
+    }
+
+    // Fade in animation on scroll
+    function animateOnScroll() {
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+
+    // Section hover effects
+    function addSectionEffects() {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+            section.addEventListener('mouseenter', () => {
+                section.style.transform = 'translateY(-8px)';
+            });
+            section.addEventListener('mouseleave', () => {
+                section.style.transform = 'translateY(0)';
+            });
+        });
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+        createTechParticles();
+        animateOnScroll();
+        setupCodeBlockObserver();
+        addSectionEffects();
+        
+        // Scroll events
+        window.addEventListener('scroll', updateScrollProgress);
+        
+        // Smooth scrolling for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+    });
+
+    // Add responsive particle count
+    function adjustParticleCount() {
+        const width = window.innerWidth;
+        const particlesContainer = document.getElementById('techParticles');
+        const currentParticles = particlesContainer.children.length;
+        const targetParticles = width < 768 ? 20 : width < 1200 ? 35 : 50;
+        
+        if (currentParticles !== targetParticles) {
+            particlesContainer.innerHTML = '';
+            for (let i = 0; i < targetParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+    }
+
+    window.addEventListener('resize', adjustParticleCount);
+
+    // Anti-Copy JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mencegah seleksi teks
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Mencegah penyalinan teks (Ctrl+C)
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            // Opsional: Tampilkan pesan
+            alert('Maaf, penyalinan konten pada halaman ini tidak diizinkan!');
+            return false;
+        });
+
+        // Mencegah pemotongan teks (Ctrl+X)
+        document.addEventListener('cut', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Mencegah penempelan teks (Ctrl+V)
+        document.addEventListener('paste', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Mencegah klik kanan
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Mencegah drag & drop
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>
