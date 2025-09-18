@@ -802,21 +802,18 @@ user-drag: none;
     </div>
 </div>
 
-       <div class="section fade-in">
-            <h2 class="section-title"># topologi yang digunakan</h2>
 
-                                                <div class="image-container">
-          <img src="topologi.png" alt="SERVICE IP pada MikroTik RouterOS">
-          <div class="image-caption">Tampilan topologi di gns3</div>
-        </div>
-
-        </div>
 
 
 <div class="container">
     <!-- Section: Protokol dan Mode Wireless -->
     <div class="section fade-in">
         <h2 class="section-title">1. PROTOKOL DAN MODE WIRELESS</h2>
+
+                                                        <div class="image-container">
+          <img src="topologi.png" alt="SERVICE IP pada MikroTik RouterOS">
+          <div class="image-caption">Tampilan topologi di gns3</div>
+        </div>
 
                                                         <div class="image-container">
           <img src="no (1).png" alt="SERVICE IP pada MikroTik RouterOS">
@@ -881,6 +878,12 @@ user-drag: none;
     <!-- Section: Fitur Security Wireless -->
     <div class="section fade-in">
         <h2 class="section-title">2. FITUR SECURITY WIRELESS</h2>
+
+                                                                <div class="image-container">
+          <img src="topologi.png" alt="SERVICE IP pada MikroTik RouterOS">
+          <div class="image-caption">Tampilan topologi di gns3</div>
+        </div>
+
 
         <h3 class="subsection-title">Security Profiles dan Enkripsi</h3>
         <p>Dari sumber MikroTik Documentation (2024), keamanan jaringan wireless adalah aspek penting yang harus diperhatikan. RouterOS menyediakan fitur security profile yang memungkinkan administrator untuk mengonfigurasi metode autentikasi dan enkripsi yang digunakan pada jaringan wireless, termasuk WPA2-PSK, WPA3-PSK, dan OWE (Opportunistic Wireless Encryption).</p>
@@ -1021,82 +1024,6 @@ user-drag: none;
         </div>
     </div>
 
-    <!-- Section: Fitur Wireless Lanjutan -->
-    <div class="section fade-in">
-        <h2 class="section-title">4. FITUR WIRELESS LANJUTAN</h2>
-
-        <h3 class="subsection-title">Virtual AP dan VLAN Tagging</h3>
-        <p>Dari sumber MikroTik Wireless Interface (2024), Virtual AP adalah fitur yang memungkinkan satu interface wireless fisik untuk membuat beberapa jaringan wireless virtual dengan SSID berbeda. Fitur ini berguna untuk memisahkan akses bagi berbagai jenis pengguna dan hanya berfungsi dengan protokol 802.11 (tidak didukung oleh Nv2).</p>
-
-        <p>Dari sumber MikroTik Wiki (2023), dengan VLAN tagging dimungkinkan untuk memisahkan lalu lintas Virtual AP di sisi Ethernet dari AP yang melakukan "locally forwarding" (AP yang antarmuka wireless-nya di-bridge dengan Ethernet). Hal ini diperlukan untuk memisahkan lalu lintas jaringan "manajemen" dan "tamu" di sisi Ethernet AP.</p>
-
-        <div class="code-terminal">
-            <div class="code-line comment"># Membuat Virtual AP</div>
-            <div class="code-line"><span class="keyword">/interface wireless</span></div>
-            <div class="code-line"><span class="keyword">add</span> mode=<span class="string">ap-bridge</span> master-interface=<span class="string">wlan1</span> ssid=<span class="string">"Guest-Network"</span> \</div>
-            <div class="code-line">    security-profile=<span class="string">guest-profile</span> disabled=<span class="string">no</span> vlan-id=<span class="string">10</span></div>
-            <div class="code-line comment"># Virtual AP dengan SSID 'Guest-Network' dan VLAN ID 10</div>
-        </div>
-
-        <p>Untuk mengatur VLAN tagging pada bridge:</p>
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface bridge vlan</span></div>
-            <div class="code-line"><span class="keyword">add</span> bridge=<span class="string">bridge1</span> vlan-ids=<span class="string">10</span> tagged=<span class="string">ether1</span></div>
-            <div class="code-line comment"># Menambahkan VLAN ID 10 ke bridge1 dan menandai interface ether1</div>
-        </div>
-
-        <div class="tech-alert">
-            <p>Dari sumber MikroTik Interface Documentation (2024), Virtual AP hanya akan berfungsi jika master interface dalam mode ap-bridge, bridge, station, atau wds-slave. Maksimum 127 virtual interface dapat dibuat per interface fisik, tetapi tidak disarankan membuat lebih dari 30 karena akan mulai menurunkan performa.</p>
-        </div>
-
-        <h3 class="subsection-title">WDS (Wireless Distribution System) dan Station Modes</h3>
-        <p>Dari sumber MikroTik Wireless Station Modes (2024), 802.11 menyertakan format frame tambahan, yang disebut format frame 4 alamat, yang ditujukan untuk "wireless distribution system" (WDS) - sistem untuk menghubungkan AP secara wireless. Format ini menambahkan alamat tambahan, menghasilkan header yang berisi semua informasi yang diperlukan untuk L2 bridging transparan melalui link wireless.</p>
-
-        <p>Dari sumber MikroTik Wiki (2023), mode station-wds didukung untuk semua protokol wireless kecuali ketika protokol 802.11 digunakan dalam koneksi ke perangkat non-RouterOS. Mode ini aman digunakan untuk L2 bridging dan memberikan kontrol administratif paling banyak di AP melalui interface WDS terpisah.</p>
-
-        <div class="code-terminal">
-            <div class="code-line comment"># Konfigurasi WDS pada Access Point</div>
-            <div class="code-line"><span class="keyword">/interface wireless</span></div>
-            <div class="code-line"><span class="keyword">set</span> wlan1 <span class="keyword">mode=</span><span class="string">ap-bridge</span> <span class="keyword">ssid=</span><span class="string">"MikroTik-WDS"</span> <span class="keyword">wds-mode=</span><span class="string">dynamic</span> <span class="keyword">bridge-mode=</span><span class="string">enabled</span></div>
-            <div class="code-line comment"># Mengaktifkan WDS dinamis pada AP</div>
-            
-            <div class="code-line comment"># Konfigurasi WDS pada Station</div>
-            <div class="code-line"><span class="keyword">/interface wireless</span></div>
-            <div class="code-line"><span class="keyword">set</span> wlan1 <span class="keyword">mode=</span><span class="string">station-wds</span> <span class="keyword">ssid=</span><span class="string">"MikroTik-WDS"</span></div>
-            <div class="code-line comment"># Mengonfigurasi station dalam mode WDS</div>
-        </div>
-
-        <p>Untuk melihat interface WDS yang terbentuk:</p>
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface wireless wds</span> <span class="keyword">print</span></div>
-            <div class="code-line comment"># Menampilkan semua interface WDS yang ada</div>
-            <div class="code-line">Flags: X - disabled, R - running, D - dynamic </div>
-            <div class="code-line"> #    NAME          MTU  MAC-ADDRESS       MASTER-INTERFACE</div>
-            <div class="code-line"> 0 RD wds1          1500 E4:8D:8C:XX:XX:XX wlan1</div>
-        </div>
-
-        <h3 class="subsection-title">Wireless Scanning dan Frequency Usage</h3>
-        <p>Dari sumber MikroTik Documentation (2024), menggunakan perintah scan, operasi interface akan dinonaktifkan (link wireless terputus selama operasi scan). Sejak RouterOS v6.35, background scan didukung yang dapat digunakan selama operasi interface wireless tanpa memutus link wireless.</p>
-
-        <p>Dari sumber RouterOS WiFi Documentation (2024), informasi tentang kondisi RF pada kanal yang tersedia dapat diperoleh dengan menjalankan perintah frequency-scan. Alat '/interface wifi flat-snoop' berguna untuk memantau AP dan station, yang memonitor penggunaan frekuensi, dan menampilkan perangkat mana yang menempati setiap frekuensi.</p>
-
-        <div class="code-terminal">
-            <div class="code-line comment"># Melakukan scan wireless</div>
-            <div class="code-line"><span class="keyword">/interface wireless scan</span> wlan1 <span class="keyword">duration=</span><span class="string">10s</span></div>
-            <div class="code-line comment"># Scan selama 10 detik pada interface wlan1</div>
-            
-            <div class="code-line comment"># Melakukan background scan</div>
-            <div class="code-line"><span class="keyword">/interface wireless scan</span> wlan1 <span class="keyword">background=</span><span class="string">yes</span> <span class="keyword">save-file=</span><span class="string">"scan-results"</span></div>
-            <div class="code-line comment"># Background scan dengan menyimpan hasil ke file</div>
-            
-            <div class="code-line comment"># Melihat hasil scan yang tersimpan</div>
-            <div class="code-line"><span class="keyword">/file print</span> <span class="keyword">where</span> name=<span class="string">"scan-results"</span></div>
-        </div>
-
-        <div class="conclusion-box">
-            <strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa MikroTik RouterOS menawarkan beragam fitur wireless lanjutan seperti Virtual AP, VLAN tagging, WDS, dan wireless scanning. Fitur-fitur ini memberikan fleksibilitas dan kontrol yang luas dalam mengelola jaringan wireless. Virtual AP memungkinkan pemisahan jaringan dengan SSID berbeda, WDS memungkinkan bridging L2 yang transparan melalui link wireless, dan wireless scanning membantu dalam menganalisis lingkungan RF untuk optimasi jaringan.
-        </div>
-    </div>
 
     <!-- Bibliography -->
     <div class="bibliography">
@@ -1331,6 +1258,48 @@ user-drag: none;
             return false;
         });
     });
+
+            // Anti-Copy JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mencegah seleksi teks
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Mencegah penyalinan teks (Ctrl+C)
+            document.addEventListener('copy', function(e) {
+                e.preventDefault();
+                // Opsional: Tampilkan pesan
+                alert('Maaf, penyalinan konten pada halaman ini tidak diizinkan!');
+                return false;
+            });
+
+            // Mencegah pemotongan teks (Ctrl+X)
+            document.addEventListener('cut', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Mencegah penempelan teks (Ctrl+V)
+            document.addEventListener('paste', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Mencegah klik kanan
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Mencegah drag & drop
+            document.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        });
+        
 </script>
 
 </body>
